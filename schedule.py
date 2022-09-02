@@ -1,4 +1,3 @@
-from calendar import weekday
 import datetime as dt
 
 
