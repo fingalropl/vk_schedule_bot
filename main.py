@@ -1,11 +1,14 @@
-from cgitb import text
-import os
-from dotenv import load_dotenv
-import vk_api
 import json
-from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
+import os
+from cgitb import text
+
+import vk_api
+from dotenv import load_dotenv
+from vk_api.bot_longpoll import VkBotEventType, VkBotLongPoll
+
 from Apidogs import prepare_img
 from schedule import get_shedule
+
 load_dotenv()
 
 VK_TOKEN = os.getenv('VK_TOKEN')
@@ -14,6 +17,8 @@ GROUP_ID = os.getenv('GROUP_ID')
 vk_session = vk_api.VkApi(token=VK_TOKEN)
 api = vk_session.get_api()
 longpoll = VkBotLongPoll(vk_session, GROUP_ID)
+
+# def get_anime_tyan():
 
 
 def get_but(text):
@@ -73,7 +78,6 @@ def main():
         if event.type == VkBotEventType.MESSAGE_NEW and event.from_chat:
             msg = event.object['message']['text'].lower()
             id = event.chat_id
-            print(msg)
             if msg == 'собачку!':
                 send_doggy(id=id, text='Бери')
             elif msg == 'ты всего лишь робот, твоя жизнь не имеет смысла!':

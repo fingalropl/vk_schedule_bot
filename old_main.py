@@ -1,11 +1,14 @@
-from cgitb import text
-import os
-from dotenv import load_dotenv
-import vk_api
 import json
-from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
+import os
+from cgitb import text
+
+import vk_api
+from dotenv import load_dotenv
+from vk_api.bot_longpoll import VkBotEventType, VkBotLongPoll
+
 from Apidogs import prepare_img
 from schedule import get_shedule
+
 load_dotenv()
 
 VK_TOKEN = os.getenv('VK_TOKEN')

@@ -1,9 +1,9 @@
-import requests
 import os
-from PIL import Image
+
+import requests
 import vk_api
 from dotenv import load_dotenv
-
+from PIL import Image
 
 load_dotenv()
 
@@ -11,7 +11,7 @@ GROUP_ID = os.getenv('GROUP_ID')
 ALBUM_ID = os.getenv('ALBUM_ID')
 MY_EMAIL = os.getenv('MY_EMAIL')
 MY_PASSWORD = os.getenv('MY_PASSWORD')
-
+ANIME_ALBUM_ID = os.getenv('ANIME_ALBUM_ID')
 
 def auth_handler():
     """ При двухфакторной аутентификации вызывается эта функция.
