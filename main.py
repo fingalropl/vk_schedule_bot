@@ -1,14 +1,13 @@
 import json
 import os
-from cgitb import text
 
 import vk_api
 from dotenv import load_dotenv
 from vk_api.bot_longpoll import VkBotEventType, VkBotLongPoll
 
-from Apidogs import prepare_img
+# from Apidogs import prepare_img
 from schedule import get_shedule
-
+from text_command import COMMANDS
 load_dotenv()
 
 VK_TOKEN = os.getenv('VK_TOKEN')
@@ -17,8 +16,6 @@ GROUP_ID = os.getenv('GROUP_ID')
 vk_session = vk_api.VkApi(token=VK_TOKEN)
 api = vk_session.get_api()
 longpoll = VkBotLongPoll(vk_session, GROUP_ID)
-
-# def get_anime_tyan():
 
 
 def get_but(text):
@@ -49,13 +46,8 @@ def json_keyboard(text):
 
 
 def send_mes(id, text, img):
-    print(img)
     if img is not True:
         api.messages.send(chat_id = id, message = text, random_id = 0, )
-
-
-def send_doggy(id, text):
-    api.messages.send(chat_id = id, message = text, random_id = 0, attachment = prepare_img())
 
 
 def send_video(id, text, vid):
@@ -68,30 +60,42 @@ def send_shedule(id, weekday):
     api.messages.send(chat_id = id, message = text, random_id = 0, attachment = shedule)
 
 
-def send_hi(id, text):
+def send_text(id, text):
     api.messages.send(chat_id = id, message = text, random_id = 0)
 
 
 def off_button(id, but_text):
     api.messages.send(chat_id = id, message = 'Нажмите, на кнопку "Вырубить кнопку", чтобы отключить старую кнопку.', keyboard = json_keyboard(but_text), random_id = 0)
 
+def distributor(msg, id):
+        if msg == 'расписание':
+            send_shedule(id=id, weekday=0)
+        elif msg == 'привет':
+            send_text(id=id, text=COMMANDS['send_hi'])
+        elif msg == 'расписание на завтра':
+            send_shedule(id=id, weekday=1)
+        elif msg == 'выключить кнопку':
+            off_button(id=id, but_text = 'Вырубить кнопку.')
+        elif msg=='что умеешь?' or msg=='что умеешь.' or msg=='что умеешь':
+            send_text(id=id, text=COMMANDS['send_help'])
+        else:
+            send_text(id=id, text=COMMANDS['send_error'])
+
 def main():
     for event in longpoll.listen():
         if event.type == VkBotEventType.MESSAGE_NEW and event.from_chat:
             msg = event.object['message']['text'].lower()
             id = event.chat_id
-            if msg == 'собачку!':
-                send_doggy(id=id, text='Бери')
-            elif msg == 'ты всего лишь робот, твоя жизнь не имеет смысла!':
-                send_video(id=id, text=' ', vid='video341601157_456239127')
-            elif msg == 'расписание':
-                send_shedule(id=id, weekday=0)
-            elif msg == 'привет':
-                send_hi(id=id, text = 'Привет. Можешь попросить расписание командой "расписание", фотку собачки - "Собачку!" еще можешь написать (лучше не надо) - "ты всего лишь робот, твоя жизнь не имеет смысла!". Отмечать меня в этих сообщениях не надо. Предложения по улучшениям пиши моему создателю "vk.com/fingalropl".')
-            elif msg == 'расписание на завтра':
-                send_shedule(id=id, weekday=1)
-            elif msg == 'выключить кнопку':
-                off_button(id=id, but_text = 'Вырубить кнопку.')
+            try:
+                name,msg = msg.split(',')
+                name = name.strip(' ')
+                msg = msg.strip(' ')
+                print(name)
+                print(msg)
+                if name == 'бот':
+                    distributor(msg,id)
+            except:
+                print(msg)
 
 
 if __name__ == '__main__':
